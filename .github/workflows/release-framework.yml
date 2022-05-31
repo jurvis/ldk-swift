@@ -54,13 +54,13 @@ jobs:
         destination: ${{ matrix.configuration['destination'] }}
         platform: ${{ matrix.configuration['platform'] }}
   create-xcframework-and-release:
+    runs-on: macos-12
+    needs: [archive]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
+      BUILD_DIR: ./build
     steps:
       - name: Create xcframework and release
-        runs-on: macos-12
-        needs: [archive]
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
-          BUILD_DIR: ./build
         run: |
           xcodebuild -create-xcframework \
             -framework ${BUILD_DIR}/LDKFramework-iOS.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
