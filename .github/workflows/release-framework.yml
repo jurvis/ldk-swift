@@ -53,6 +53,11 @@ jobs:
         scheme: ${{ matrix.configuration['scheme'] }}
         destination: ${{ matrix.configuration['destination'] }}
         platform: ${{ matrix.configuration['platform'] }}
+    - name: List Files
+      shell: bash
+      run: |
+        ls ./xcode
+        ls ./xcode/build
     - name: Upload Archive
       uses: actions/upload-artifact@v3
       with:
