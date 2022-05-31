@@ -1,4 +1,4 @@
-name: Build For Testing
+name: Archive Framework
 inputs:
   scheme:
     description: Scheme
