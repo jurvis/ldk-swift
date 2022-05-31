@@ -58,7 +58,7 @@ jobs:
       with:
         name: LDKFramework-${{ matrix.configuration['platform'] }}
         path: |
-          ${BUILD_DIR}/LDKFramework-${{ matrix.configuration['platform'] }}.xcarchive
+          $BUILD_DIR/LDKFramework-${{ matrix.configuration['platform'] }}.xcarchive
   # create-xcframework:
   #   name: Create Fat Framework
   #   runs-on: macos-12
