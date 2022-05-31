@@ -97,5 +97,3 @@ jobs:
             ${BUILD_DIR}/LDKFramework-OS\ X.xcarchive
             ${BUILD_DIR}/LDKFramework-Mac\ Catalyst.xcarchive
             ${BUILD_DIR}/LDKFramework.xcframework
-  release:
-    name: Release Framework
