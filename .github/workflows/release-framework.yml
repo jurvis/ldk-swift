@@ -59,36 +59,31 @@ jobs:
         name: LDKFramework-${{ matrix.configuration['platform'] }}
         path: |
           ./xcode/build/LDKFramework-${{ matrix.configuration['platform'] }}.xcarchive
-  # create-xcframework:
-  #   name: Create Fat Framework
-  #   runs-on: macos-12
-  #   needs: [archive]
-  #   env:
-  #     DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
-  #     BUILD_DIR: ./build
-  #   steps:
-  #     - name: Download xcarchives
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #           name: LDKFramework-iOS
-  #           path: |
-  #             ${BUILD_DIR}/LDKFramework-iOS.xcarchive
-  #           name:
-  #     - name: Create xcframework and release
-  #       run: |
-  #         xcodebuild -create-xcframework \
-  #           -framework ${BUILD_DIR}/LDKFramework-iOS.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-  #           -framework ${BUILD_DIR}/LDKFramework-iOS\ Simulator.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-  #           -framework ${BUILD_DIR}/LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-  #           -framework ${BUILD_DIR}/LDKFramework-Catalyst.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-  #           -output ${BUILD_DIR}/LDKFramework.xcframework
-  #     - name: Release
-  #       uses: softprops/action-gh-release@v1
-  #       if: startsWith(github.ref, 'refs/tags/')
-  #       with:
-  #         files: |
-  #           ${BUILD_DIR}/LDKFramework-iOS.xcarchive
-  #           ${BUILD_DIR}/LDKFramework-iOS\ Simulator.xcarchive
-  #           ${BUILD_DIR}/LDKFramework-OS\ X.xcarchive
-  #           ${BUILD_DIR}/LDKFramework-Mac\ Catalyst.xcarchive
-  #           ${BUILD_DIR}/LDKFramework.xcframework
+  create-xcframework:
+    name: Create Fat Framework
+    runs-on: macos-12
+    needs: [archive]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
+      BUILD_DIR: ./build
+    steps:
+      - name: Download xcarchives
+        uses: actions/download-artifact@v3
+      - name: Create xcframework and release
+        run: |
+          xcodebuild -create-xcframework \
+            -framework LDKFramework-iOS.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework LDKFramework-iOS\ Simulator.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework LDKFramework-Catalyst.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -output LDKFramework.xcframework
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            LDKFramework-iOS.xcarchive
+            LDKFramework-iOS\ Simulator.xcarchive
+            LDKFramework-OS\ X.xcarchive
+            LDKFramework-Mac\ Catalyst.xcarchive
+            LDKFramework.xcframework
