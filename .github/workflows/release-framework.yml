@@ -74,8 +74,8 @@ jobs:
           xcodebuild -create-xcframework \
             -framework LDKFramework-iOS.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
             -framework LDKFramework-iOS\ Simulator.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-            -framework LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
             -framework LDKFramework-Catalyst.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework_Mac.framework \
             -output LDKFramework.xcframework
       - name: Release
         uses: softprops/action-gh-release@v1
