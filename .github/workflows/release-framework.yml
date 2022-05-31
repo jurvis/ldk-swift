@@ -28,11 +28,11 @@ jobs:
           workspace: LDKFramework.xcworkspace
         - scheme: LDKFramework_Mac
           destination: generic/platform=OS X
-          platform: OS X
+          platform: Darwin
           workspace: LDKFramework.xcworkspace
         - scheme: LDKFramework
           destination: platform=macOS,variant=Mac Catalyst,arch=x86_64
-          platform: Mac Catalyst
+          platform: Catalyst
           workspace: LDKFramework.xcworkspace
     env:
       DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
@@ -53,20 +53,39 @@ jobs:
         scheme: ${{ matrix.configuration['scheme'] }}
         destination: ${{ matrix.configuration['destination'] }}
         platform: ${{ matrix.configuration['platform'] }}
-  create-xcframework-and-release:
+    - name: Upload Archives
+      uses: actions/upload-artifact@v3
+      with:
+        name: Xcarchives
+        path: |
+          ${BUILD_DIR}/LDKFramework-iOS.xcarchive
+          ${BUILD_DIR}/LDKFramework-iOS\ Simulator.xcarchive
+          ${BUILD_DIR}/LDKFramework-Darwin.xcarchive
+          ${BUILD_DIR}/LDKFramework-Catalyst.xcarchive
+  create-xcframework:
+    name: Create Fat Framework
     runs-on: macos-12
     needs: [archive]
     env:
       DEVELOPER_DIR: /Applications/Xcode_13.2.1.app/Contents/Developer
       BUILD_DIR: ./build
     steps:
+      - name: Download xcarchives
+        uses: actions/download-artifact@v3
+        with:
+            name: Xcarchives
+            path: |
+              ${BUILD_DIR}/LDKFramework-iOS.xcarchive
+              ${BUILD_DIR}/LDKFramework-iOS\ Simulator.xcarchive
+              ${BUILD_DIR}/LDKFramework-Darwin.xcarchive
+              ${BUILD_DIR}/LDKFramework-Catalyst.xcarchive
       - name: Create xcframework and release
         run: |
           xcodebuild -create-xcframework \
             -framework ${BUILD_DIR}/LDKFramework-iOS.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
             -framework ${BUILD_DIR}/LDKFramework-iOS\ Simulator.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-            -framework ${BUILD_DIR}/LDKFramework-OS\ X.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
-            -framework ${BUILD_DIR}/LDKFramework-Mac\ Catalyst.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework ${BUILD_DIR}/LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
+            -framework ${BUILD_DIR}/LDKFramework-Catalyst.xcarchive/Products/Library/Frameworks/LDKFramework.framework \
             -output ${BUILD_DIR}/LDKFramework.xcframework
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -78,3 +97,5 @@ jobs:
             ${BUILD_DIR}/LDKFramework-OS\ X.xcarchive
             ${BUILD_DIR}/LDKFramework-Mac\ Catalyst.xcarchive
             ${BUILD_DIR}/LDKFramework.xcframework
+  release:
+    name: Release Framework
