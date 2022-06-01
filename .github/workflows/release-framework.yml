@@ -78,9 +78,8 @@ jobs:
             -framework LDKFramework-Darwin.xcarchive/Products/Library/Frameworks/LDKFramework_Mac.framework \
             -output LDKFramework.xcframework
       - name: Zip Xcframework
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r LDKFramework.xcframework.zip LDKFramework.xcframework
+        run: |
+          zip -r LDKFramework.xcframework.zip LDKFramework.xcframework
       - name: Upload Framework Artifact
         uses: actions/upload-artifact@v3
         with:
